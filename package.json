@@ -1,0 +1,12 @@
+{
+  "name": "angostura-tics",
+  "version": "1.0.0",
+  "description": "Sitio web oficial de Angostura TICS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

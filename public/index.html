@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angostura TICS | Tecnologías Inteligentes Corriendo Seguramente</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container logo-container">
+      <h1 id="brand-name">Angostura TICS</h1>
+      <span class="acronym-tag" id="brand-acronym">TICS</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h2 id="hero-slogan">Cargando...</h2>
+      <p id="company-about" class="hero-desc"></p>
+    </div>
+  </section>
+
+  <main class="container content">
+    <section class="services-section">
+      <h3>Nuestros Servicios Principalmente Enfocados en Seguridad</h3>
+      <div class="services-grid" id="services-container">
+        <!-- Generado dinámicamente -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container footer-content">
+      <p>&copy; 2026 <strong>Angostura TICS</strong> — <em>Tecnologías Inteligentes Corriendo Seguramente</em></p>
+      <div id="contact-info"></div>
+    </div>
+  </footer>
+
+  <script>
+    // Consumir API interna sin BD
+    fetch('/api/info')
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('brand-name').textContent = data.name;
+        document.getElementById('brand-acronym').title = data.acronym;
+        document.getElementById('hero-slogan').textContent = data.slogan;
+        document.getElementById('company-about').textContent = data.about;
+
+        // Renderizar servicios
+        const servicesContainer = document.getElementById('services-container');
+        servicesContainer.innerHTML = '';
+        data.services.forEach(service => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.innerHTML = `
+            <h4>${service.title}</h4>
+            <p>${service.description}</p>
+          `;
+          servicesContainer.appendChild(card);
+        });
+
+        // Contacto
+        document.getElementById('contact-info').innerHTML = `
+          <small>Contacto: ${data.contact.email} | ${data.contact.phone}</small>
+        `;
+      })
+      .catch(err => console.error('Error al cargar la información:', err));
+  </script>
+</body>
+</html>
