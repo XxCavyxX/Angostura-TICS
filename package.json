@@ -5,8 +5,25 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
+    "test": "jest --passWithNoTests"
   },
   "dependencies": {
     "express": "^4.19.2"
-  }
+  },
+  "devDependencies": {
+    "jest": "^30.5.2",
+    "supertest": "^7.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XxCavyxX/Angostura-TICS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/XxCavyxX/Angostura-TICS/issues"
+  },
+  "homepage": "https://github.com/XxCavyxX/Angostura-TICS#readme"
 }
