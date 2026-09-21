@@ -1,0 +1,62 @@
+trigger:
+  - main
+  - master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+- stage: Build
+  displayName: 'Etapa de CI: Compilación y Pruebas'
+  jobs:
+  - job: BuildJob
+    displayName: 'Instalar, Probar y Empaquetar'
+    steps:
+    - task: UseNode@1
+      inputs:
+        version: '20.x'
+      displayName: 'Instalar Node.js'
+
+    - script: |
+        npm install
+        npm test
+      displayName: 'Instalar dependencias y ejecutar pruebas'
+
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+        includeRootFolder: false
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+      displayName: 'Empaquetar código en ZIP'
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+      displayName: 'Publicar artefacto'
+
+- stage: Deploy
+  displayName: 'Etapa de CD: Despliegue en Azure'
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - job: DeployJob
+    displayName: 'Desplegar en Azure App Service'
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        buildType: 'current'
+        downloadType: 'single'
+        artifactName: 'drop'
+        downloadPath: '$(System.ArtifactsDirectory)'
+      displayName: 'Descargar artefacto'
+
+    - task: AzureWebApp@1
+      inputs:
+        azureSubscription: 'ConexionAzureDevOps'
+        appType: 'webAppLinux'
+        appName: 'AngosturaTICS-V4'
+        package: '$(System.ArtifactsDirectory)/drop/$(Build.BuildId).zip'
+      displayName: 'Desplegar Web App Linux'
